@@ -1,5 +1,7 @@
 package eu.nazgee.sunflower.textures;
 
+import java.util.LinkedList;
+
 import org.andengine.engine.Engine;
 import org.andengine.opengl.font.Font;
 import org.andengine.opengl.font.FontFactory;
@@ -8,17 +10,12 @@ import org.andengine.opengl.texture.TextureManager;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
-import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.util.adt.color.Color;
-import org.andengine.util.debug.Debug;
-import org.andengine.util.texturepack.TexturePack;
-import org.andengine.util.texturepack.TexturePackLoader;
-import org.andengine.util.texturepack.exception.TexturePackParseException;
 
 import android.content.Context;
 import eu.nazgee.sunflower.Consts;
 
-public class TexturesLibrary {
+public class Library implements ITexturesLibrary {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -28,50 +25,46 @@ public class TexturesLibrary {
 	// ===========================================================
 	private BitmapTextureAtlas mFontAtlas;
 	private Font mFont;
-
-	private TexturePack mSpritesheetProps;
-	private TexturePack mSpritesheetTiles;
+	private LinkedList<ITexturesLibrary> mLibs = new LinkedList<ITexturesLibrary>();
+	private final TexturesLibraryProps mProps;
+	private final TexturesLibraryTiles mTiles;
 
 	// ===========================================================
 	// Constructors
 	// ===========================================================
-	public TexturesLibrary() {
+	public Library(final Engine e, final Context c) {
+		mProps = new TexturesLibraryProps(e, c);
+		mTiles = new TexturesLibraryTiles(e, c);
+		mLibs.add(getProps());
+		mLibs.add(getTiles());
 	}
 
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public TexturesLibraryProps getProps() {
+		return mProps;
+	}
+
+	public TexturesLibraryTiles getTiles() {
+		return mTiles;
+	}
 
 	public Font getFont() {
 		return mFont;
 	}
 
-	public ITextureRegion getTileGrass() {
-		return mSpritesheetTiles.getTexturePackTextureRegionLibrary().get(Tiles.GRASS_ID);
-	}
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
 
 	public void load(final Engine e, final Context c) {
-		// Prepare a reloaders that will store and reload big texture atlasses
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		FontFactory.setAssetBasePath("fonts/");
 
-		// Load spritesheet
-		try {
-			mSpritesheetProps = new TexturePackLoader(c.getAssets(), e.getTextureManager()).loadFromAsset(Consts.PATH_SPRITESHEETS + "props.xml", Consts.PATH_SPRITESHEETS);
-			mSpritesheetProps.loadTexture();
-		} catch (final TexturePackParseException ex) {
-			Debug.e(ex);
-		}
-
-		// Load spritesheet
-		try {
-			mSpritesheetTiles = new TexturePackLoader(c.getAssets(), e.getTextureManager()).loadFromAsset(Consts.PATH_SPRITESHEETS + "tiles.xml", Consts.PATH_SPRITESHEETS);
-			mSpritesheetTiles.loadTexture();
-		} catch (final TexturePackParseException ex) {
-			Debug.e(ex);
+		// Load spritesheets
+		for (ITexturesLibrary lib : this.mLibs) {
+			lib.load(e, c);
 		}
 
 		// Load fonts
@@ -84,8 +77,10 @@ public class TexturesLibrary {
 	}
 
 	public void unload() {
-		mSpritesheetProps.unloadTexture();
-		mSpritesheetTiles.unloadTexture();
+		// Load spritesheets
+		for (ITexturesLibrary lib : this.mLibs) {
+			lib.unload();
+		}
 		mFont.unload();
 	}
 	// ===========================================================
