@@ -106,8 +106,8 @@ public class GameActivity extends SimpleAsyncGameActivity {
 		/* Create the face and add it to the scene. */
 		final Sprite grass = new Sprite(centerX, centerY, this.mLibrary.getTiles().getGrass(), this.getVertexBufferObjectManager());
 		pScene.attachChild(grass);
-		final Sprite face = new Sprite(centerX, centerY, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
-		pScene.attachChild(face);
+		final Sprite box = new Sprite(centerX, centerY, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
+		pScene.attachChild(box);
 
 		this.mPhysicsWorld = new PhysicsWorld(new Vector2(0, SensorManager.GRAVITY_EARTH), false);
 
@@ -131,10 +131,10 @@ public class GameActivity extends SimpleAsyncGameActivity {
 		pScene.registerUpdateHandler(this.mPhysicsWorld);
 
 		final Sprite animatedSprite;
-		Body body;
+//		Body body;
 
-		final float pX = 100;
-		final float pY = 100;
+		final float pX = centerX;
+		final float pY = centerY;
 //		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 //		animatedSprite = new Sprite(pX, pY, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
 //		body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, animatedSprite, BodyType.DynamicBody, fixture);
@@ -146,20 +146,28 @@ public class GameActivity extends SimpleAsyncGameActivity {
 
 		int i = 0;
 		do {
+			Sprite face = new Sprite(pX - i * 10, pY - i * 10, this.mLibrary.getProps().getSeed(0), this.getVertexBufferObjectManager());
+			Body body = phys.createBody("seed_01", face, mPhysicsWorld);
+			pScene.attachChild(face);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
+
+			face = new Sprite(pX + i * 10, pY + i * 10, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
+			body = phys.createBody("seed_02", face, mPhysicsWorld);
+			pScene.attachChild(face);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
+
+			face = new Sprite(pX - i * 10, pY - i * 10, this.mLibrary.getProps().getSun(0), 	this.getVertexBufferObjectManager());
+			body = phys.createBody("sun_01", face, mPhysicsWorld);
+			pScene.attachChild(face);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
+
+			face = new Sprite(pX + i * 10, pY + i * 10, this.mLibrary.getProps().getSun(1), 	this.getVertexBufferObjectManager());
+			body = phys.createBody("sun_02", face, mPhysicsWorld);
+			pScene.attachChild(face);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
+
 			i++;
-			Sprite seed = new Sprite(pX + i * 10, pY, this.mLibrary.getProps()
-					.getSeed(1), this.getVertexBufferObjectManager());
-			body = phys.createBody("02", seed, mPhysicsWorld);
-			pScene.attachChild(seed);
-			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
-					seed, body, true, true));
-			seed = new Sprite(pX, pY + i * 10, this.mLibrary.getProps().getSeed(0),
-					this.getVertexBufferObjectManager());
-			body = phys.createBody("01", seed, mPhysicsWorld);
-			pScene.attachChild(seed);
-			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
-					seed, body, true, true));
-		} while (i < 10);
+		} while (i < 4);
 
 	}
 

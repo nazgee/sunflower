@@ -1,4 +1,4 @@
-package eu.nazgee.sunflower.textured;
+package eu.nazgee.sunflower.primitives;
 
 import org.andengine.engine.camera.Camera;
 import org.andengine.entity.IEntity;

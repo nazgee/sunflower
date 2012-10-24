@@ -14,4 +14,8 @@ public class TexturesLibraryProps extends TexturesLibraryBase {
 	public ITextureRegion getSeed(int pSeedId) {
 		return mSpritesheet.getTexturePackTextureRegionLibrary().get(Props.getSeedID(pSeedId));
 	}
+
+	public ITextureRegion getSun(int pSunId) {
+		return mSpritesheet.getTexturePackTextureRegionLibrary().get(Props.getSunID(pSunId));
+	}
 }

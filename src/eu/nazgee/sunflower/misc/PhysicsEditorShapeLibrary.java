@@ -34,6 +34,7 @@ import android.content.Context;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 
@@ -80,24 +81,57 @@ public class PhysicsEditorShapeLibrary {
         BodyTemplate bodyTemplate = this.shapes.get(name);
 
         final BodyDef boxBodyDef = new BodyDef();
-boxBodyDef.type = bodyTemplate.isDynamic ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody;
+        boxBodyDef.type = bodyTemplate.isDynamic ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody;
 
-final float[] sceneCenterCoordinates = pShape.getSceneCenterCoordinates();
-boxBodyDef.position.x = sceneCenterCoordinates[Constants.VERTEX_INDEX_X] / this.pixelToMeterRatio;
-boxBodyDef.position.y = sceneCenterCoordinates[Constants.VERTEX_INDEX_Y] / this.pixelToMeterRatio;
+        final float[] sceneCenterCoordinates = pShape.getSceneCenterCoordinates();
+        boxBodyDef.position.x = sceneCenterCoordinates[Constants.VERTEX_INDEX_X] / this.pixelToMeterRatio;
+        boxBodyDef.position.y = sceneCenterCoordinates[Constants.VERTEX_INDEX_Y] / this.pixelToMeterRatio;
 
-final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
+        final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
 
         for(FixtureTemplate fixtureTemplate : bodyTemplate.fixtureTemplates) {
+//        	public static Body createPolygonBody(final PhysicsWorld pPhysicsWorld, final IEntity pEntity, final Vector2[] pVertices, final BodyType pBodyType, final FixtureDef pFixtureDef, final float pPixelToMeterRatio) {
+//        		final BodyDef boxBodyDef = new BodyDef();
+//        		boxBodyDef.type = pBodyType;
+//
+//        		final float[] sceneCenterCoordinates = pEntity.getSceneCenterCoordinates();
+//        		boxBodyDef.position.x = sceneCenterCoordinates[Constants.VERTEX_INDEX_X] / pPixelToMeterRatio;
+//        		boxBodyDef.position.y = sceneCenterCoordinates[Constants.VERTEX_INDEX_Y] / pPixelToMeterRatio;
+//
+//        		final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
+//
+//        		final PolygonShape boxPoly = new PolygonShape();
+//
+//        		boxPoly.set(pVertices);
+//        		pFixtureDef.shape = boxPoly;
+//
+//        		boxBody.createFixture(pFixtureDef);
+//
+//        		boxPoly.dispose();
+//
+//        		return boxBody;
+//        	}
             for(int i = 0; i < fixtureTemplate.polygons.length; i++) {
-                final PolygonShape polygonShape = new PolygonShape();
-                final FixtureDef fixtureDef = fixtureTemplate.fixtureDef;
+                final PolygonShape shape = new PolygonShape();
+                final FixtureDef fixture = fixtureTemplate.fixtureDef;
 
-                polygonShape.set(fixtureTemplate.polygons[i].vertices);
+                shape.set(fixtureTemplate.polygons[i].vertices);
 
-                fixtureDef.shape = polygonShape;
-                boxBody.createFixture(fixtureDef);
-                polygonShape.dispose();
+                fixture.shape = shape;
+                boxBody.createFixture(fixture);
+                shape.dispose();
+            }
+            for(int i = 0; i < fixtureTemplate.circles.length; i++) {
+                final CircleShape shape = new CircleShape();
+                final FixtureDef fixture = fixtureTemplate.fixtureDef;
+                CircleTemplate template = fixtureTemplate.circles[i];
+
+                shape.setRadius(template.r);
+                shape.setPosition(new Vector2(template.x, template.y));
+
+                fixture.shape = shape;
+                boxBody.createFixture(fixture);
+                shape.dispose();
             }
         }
 
@@ -119,10 +153,12 @@ final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
         public static final String TAG_BODY = "body";
         public static final String TAG_FIXTURE = "fixture";
         public static final String TAG_POLYGON = "polygon";
+        public static final String TAG_CIRCLE = "circle";
         public static final String TAG_VERTEX = "vertex";
         public static final String TAG_NAME = "name";
         public static final String TAG_X = "x";
         public static final String TAG_Y = "y";
+        public static final String TAG_R = "r";
         public static final String TAG_DENSITY = "density";
         public static final String TAG_RESTITUTION = "restitution";
         public static final String TAG_FRICTION = "friction";
@@ -137,8 +173,10 @@ final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
         private HashMap<String, BodyTemplate> shapes;
         private BodyTemplate currentBody;
         private ArrayList<Vector2> currentPolygonVertices = new ArrayList<Vector2>();
+        private CircleTemplate currentCircle = new CircleTemplate(0, 0, 0);
         private ArrayList<FixtureTemplate> currentFixtures = new ArrayList<FixtureTemplate>();
         private ArrayList<PolygonTemplate> currentPolygons = new ArrayList<PolygonTemplate>();
+        private ArrayList<CircleTemplate> currentCircles = new ArrayList<CircleTemplate>();
 
 
 
@@ -159,8 +197,11 @@ final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
 
             if (localName.equalsIgnoreCase(TAG_POLYGON)) {
                 currentPolygons.add(new PolygonTemplate(currentPolygonVertices));
+            } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
+            	currentCircles.add(currentCircle);
             } else if (localName.equalsIgnoreCase(TAG_FIXTURE)) {
                 currentFixtures.get(currentFixtures.size()-1).setPolygons(currentPolygons);
+                currentFixtures.get(currentFixtures.size()-1).setCircles(currentCircles);
             } else if (localName.equalsIgnoreCase(TAG_BODY)) {
                 currentBody.setFixtures(currentFixtures);
                 shapes.put(currentBody.name, currentBody);
@@ -200,7 +241,11 @@ final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
                 currentPolygonVertices.clear();
             } else if (localName.equalsIgnoreCase(TAG_VERTEX)) {
                 currentPolygonVertices.add(new Vector2(Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
-            }
+            } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
+                currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X));
+                currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y));
+                currentCircle.r = Float.parseFloat(attributes.getValue(TAG_R)) / this.pixelToMeterRatio;
+            } 
         }
     }
     private static short parseShort(String val) {
@@ -218,15 +263,29 @@ final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
     }
     private static class FixtureTemplate {
         public PolygonTemplate[] polygons;
+        public CircleTemplate[] circles;
         public FixtureDef fixtureDef;
         public void setPolygons(ArrayList<PolygonTemplate> polygonTemplates) {
             polygons = polygonTemplates.toArray(new PolygonTemplate[polygonTemplates.size()]);
+        }
+        public void setCircles(ArrayList<CircleTemplate> circleTemplates) {
+        	circles = circleTemplates.toArray(new CircleTemplate[circleTemplates.size()]);
         }
     }
     private static class PolygonTemplate {
         public Vector2[] vertices;
         public PolygonTemplate(ArrayList<Vector2> vectorList) {
             vertices = vectorList.toArray(new Vector2[vectorList.size()]);
+        }
+    }
+    private static class CircleTemplate {
+        public float x;
+        public float y;
+        public float r;
+        public CircleTemplate(final float x, final float y, final float r) {;
+            this.x = x;
+            this.y = y;
+            this.r = r;
         }
     }
 }

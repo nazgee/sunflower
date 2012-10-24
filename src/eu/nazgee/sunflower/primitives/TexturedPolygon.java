@@ -1,4 +1,4 @@
-package eu.nazgee.sunflower.textured;
+package eu.nazgee.sunflower.primitives;
 
 import java.util.ArrayList;
 import java.util.List;
