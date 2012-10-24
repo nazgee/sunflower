@@ -90,27 +90,6 @@ public class PhysicsEditorShapeLibrary {
         final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
 
         for(FixtureTemplate fixtureTemplate : bodyTemplate.fixtureTemplates) {
-//        	public static Body createPolygonBody(final PhysicsWorld pPhysicsWorld, final IEntity pEntity, final Vector2[] pVertices, final BodyType pBodyType, final FixtureDef pFixtureDef, final float pPixelToMeterRatio) {
-//        		final BodyDef boxBodyDef = new BodyDef();
-//        		boxBodyDef.type = pBodyType;
-//
-//        		final float[] sceneCenterCoordinates = pEntity.getSceneCenterCoordinates();
-//        		boxBodyDef.position.x = sceneCenterCoordinates[Constants.VERTEX_INDEX_X] / pPixelToMeterRatio;
-//        		boxBodyDef.position.y = sceneCenterCoordinates[Constants.VERTEX_INDEX_Y] / pPixelToMeterRatio;
-//
-//        		final Body boxBody = pPhysicsWorld.createBody(boxBodyDef);
-//
-//        		final PolygonShape boxPoly = new PolygonShape();
-//
-//        		boxPoly.set(pVertices);
-//        		pFixtureDef.shape = boxPoly;
-//
-//        		boxBody.createFixture(pFixtureDef);
-//
-//        		boxPoly.dispose();
-//
-//        		return boxBody;
-//        	}
             for(int i = 0; i < fixtureTemplate.polygons.length; i++) {
                 final PolygonShape shape = new PolygonShape();
                 final FixtureDef fixture = fixtureTemplate.fixtureDef;
@@ -126,8 +105,8 @@ public class PhysicsEditorShapeLibrary {
                 final FixtureDef fixture = fixtureTemplate.fixtureDef;
                 CircleTemplate template = fixtureTemplate.circles[i];
 
-                shape.setRadius(template.r);
                 shape.setPosition(new Vector2(template.x, template.y));
+                shape.setRadius(template.r);
 
                 fixture.shape = shape;
                 boxBody.createFixture(fixture);
@@ -198,10 +177,11 @@ public class PhysicsEditorShapeLibrary {
             if (localName.equalsIgnoreCase(TAG_POLYGON)) {
                 currentPolygons.add(new PolygonTemplate(currentPolygonVertices));
             } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
-            	currentCircles.add(currentCircle);
+            	currentCircles.add(new CircleTemplate(currentCircle.x, currentCircle.y, currentCircle.r));
             } else if (localName.equalsIgnoreCase(TAG_FIXTURE)) {
-                currentFixtures.get(currentFixtures.size()-1).setPolygons(currentPolygons);
-                currentFixtures.get(currentFixtures.size()-1).setCircles(currentCircles);
+            	FixtureTemplate fixture = currentFixtures.get(currentFixtures.size()-1);
+                fixture.setPolygons(currentPolygons);
+                fixture.setCircles(currentCircles);
             } else if (localName.equalsIgnoreCase(TAG_BODY)) {
                 currentBody.setFixtures(currentFixtures);
                 shapes.put(currentBody.name, currentBody);
@@ -228,6 +208,7 @@ public class PhysicsEditorShapeLibrary {
             } else if (localName.equalsIgnoreCase(TAG_FIXTURE)) {
                 FixtureTemplate fixture = new FixtureTemplate();
                 currentPolygons.clear();
+                currentCircles.clear();
                 float restitution = Float.parseFloat(attributes.getValue(TAG_RESTITUTION));
                 float friction = Float.parseFloat(attributes.getValue(TAG_FRICTION));
                 float density = Float.parseFloat(attributes.getValue(TAG_DENSITY));
@@ -242,9 +223,13 @@ public class PhysicsEditorShapeLibrary {
             } else if (localName.equalsIgnoreCase(TAG_VERTEX)) {
                 currentPolygonVertices.add(new Vector2(Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
             } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
-                currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X));
-                currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y));
-                currentCircle.r = Float.parseFloat(attributes.getValue(TAG_R)) / this.pixelToMeterRatio;
+            	currentCircle.r = Float.parseFloat(attributes.getValue(TAG_R)) / this.pixelToMeterRatio;
+                currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio;
+                currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio;
+//                currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X));
+//                currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y));
+//                currentCircle.x += 0.5f;
+//                currentCircle.y += 0.5f;
             } 
         }
     }

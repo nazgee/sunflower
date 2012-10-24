@@ -13,6 +13,9 @@ import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
+import org.andengine.input.sensor.acceleration.AccelerationData;
+import org.andengine.input.sensor.acceleration.IAccelerationListener;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -29,9 +32,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
+import eu.nazgee.sunflower.primitives.Box2dDebugRenderer;
 import eu.nazgee.sunflower.textures.Library;
 
-public class GameActivity extends SimpleAsyncGameActivity {
+public class GameActivity extends SimpleAsyncGameActivity implements IAccelerationListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -62,7 +66,7 @@ public class GameActivity extends SimpleAsyncGameActivity {
 	@Override
 	public EngineOptions onCreateEngineOptions() {
 		final Camera camera = new Camera(0, 0, Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT);
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new RatioResolutionPolicy(Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT), camera);
+		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(Consts.CAMERA_WIDTH, Consts.CAMERA_HEIGHT), camera);
 	}
 
 	@Override
@@ -135,7 +139,7 @@ public class GameActivity extends SimpleAsyncGameActivity {
 
 		final float pX = centerX;
 		final float pY = centerY;
-//		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
 //		animatedSprite = new Sprite(pX, pY, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
 //		body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, animatedSprite, BodyType.DynamicBody, fixture);
 //		pScene.attachChild(animatedSprite);
@@ -166,11 +170,49 @@ public class GameActivity extends SimpleAsyncGameActivity {
 			pScene.attachChild(face);
 			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
 
+			face = new Sprite(pX + i * 10, pY + i * 10, this.mLibrary.getProps().getSnowman(), 	this.getVertexBufferObjectManager());
+			body = phys.createBody("snowman", face, mPhysicsWorld);
+			pScene.attachChild(face);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
+
+//			Rectangle rect = new Rectangle(100, 100, 84, 84, getVertexBufferObjectManager());
+//			rect.setColor(0.09804f, 0.8274f, 0.9784f);
+//			body = PhysicsFactory.createCircleBody(mPhysicsWorld, rect, BodyType.DynamicBody, fixture);
+//			pScene.attachChild(rect);
+//			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(rect, body, true, true));
+			
 			i++;
 		} while (i < 4);
 
+		Box2dDebugRenderer debug = new Box2dDebugRenderer(this.mPhysicsWorld, getVertexBufferObjectManager());
+		pScene.attachChild(debug);
 	}
 
+	@Override
+	public void onAccelerationChanged(final AccelerationData pAccelerationData) {
+		final Vector2 gravity = Vector2Pool.obtain(pAccelerationData.getX(), pAccelerationData.getY());
+		this.mPhysicsWorld.setGravity(gravity);
+		Vector2Pool.recycle(gravity);
+	}
+
+	@Override
+	public void onAccelerationAccuracyChanged(final AccelerationData pAccelerationData) {
+
+	}
+
+	@Override
+	public void onResumeGame() {
+		super.onResumeGame();
+
+		this.enableAccelerationSensor(this);
+	}
+
+	@Override
+	public void onPauseGame() {
+		super.onPauseGame();
+
+		this.disableAccelerationSensor();
+	}
 	// ===========================================================
 	// Methods
 	// ===========================================================
