@@ -76,7 +76,6 @@ public class Box2dDebugRenderer extends Entity {
                                 else shape.setColor(Color.red(inactiveBodyColor), Color.green(inactiveBodyColor), Color.blue(inactiveBodyColor));
                                
                                 shape.setRotationCenter(body.getMassData().center.x * ptm, body.getMassData().center.y * ptm);
-//                                shape.setRotation((float) (body.getAngle() * (180 / Math.PI)));
                                 shape.setRotation((float) (360 - body.getAngle() * (180 / Math.PI)));
                                 shape.setPosition(body.getPosition().x * ptm, body.getPosition().y * ptm);
                         }

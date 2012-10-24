@@ -221,7 +221,7 @@ public class PhysicsEditorShapeLibrary {
             } else if (localName.equalsIgnoreCase(TAG_POLYGON)) {
                 currentPolygonVertices.clear();
             } else if (localName.equalsIgnoreCase(TAG_VERTEX)) {
-                currentPolygonVertices.add(new Vector2(Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
+                currentPolygonVertices.add(new Vector2(-Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, -Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
             } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
             	currentCircle.r = Float.parseFloat(attributes.getValue(TAG_R)) / this.pixelToMeterRatio;
                 currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio;
