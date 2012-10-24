@@ -8,7 +8,6 @@ import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
-import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.util.FPSLogger;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
@@ -29,6 +28,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
 import eu.nazgee.sunflower.textures.Library;
 
 public class GameActivity extends SimpleAsyncGameActivity {
@@ -131,16 +131,36 @@ public class GameActivity extends SimpleAsyncGameActivity {
 		pScene.registerUpdateHandler(this.mPhysicsWorld);
 
 		final Sprite animatedSprite;
-		final Body body;
+		Body body;
 
 		final float pX = 100;
 		final float pY = 100;
-		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-		animatedSprite = new Sprite(pX, pY, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
-		body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, animatedSprite, BodyType.DynamicBody, fixture);
+//		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
+//		animatedSprite = new Sprite(pX, pY, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
+//		body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, animatedSprite, BodyType.DynamicBody, fixture);
+//		pScene.attachChild(animatedSprite);
+//		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(animatedSprite, body, true, true));
 
-		pScene.attachChild(animatedSprite);
-		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(animatedSprite, body, true, true));
+		PhysicsEditorShapeLibrary phys = new PhysicsEditorShapeLibrary();
+		phys.open(this, "physics/physics.xml");
+
+		int i = 0;
+		do {
+			i++;
+			Sprite seed = new Sprite(pX + i * 10, pY, this.mLibrary.getProps()
+					.getSeed(1), this.getVertexBufferObjectManager());
+			body = phys.createBody("02", seed, mPhysicsWorld);
+			pScene.attachChild(seed);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
+					seed, body, true, true));
+			seed = new Sprite(pX, pY + i * 10, this.mLibrary.getProps().getSeed(0),
+					this.getVertexBufferObjectManager());
+			body = phys.createBody("01", seed, mPhysicsWorld);
+			pScene.attachChild(seed);
+			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(
+					seed, body, true, true));
+		} while (i < 10);
+
 	}
 
 	// ===========================================================
