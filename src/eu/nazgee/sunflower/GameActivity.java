@@ -32,7 +32,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
-import eu.nazgee.sunflower.primitives.Box2dDebugRenderer;
+import eu.nazgee.sunflower.primitives.DebugRenderer;
 import eu.nazgee.sunflower.textures.Library;
 
 public class GameActivity extends SimpleAsyncGameActivity implements IAccelerationListener {
@@ -184,7 +184,9 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 			i++;
 		} while (i < 4);
 
-		Box2dDebugRenderer debug = new Box2dDebugRenderer(this.mPhysicsWorld, getVertexBufferObjectManager());
+//		Box2dDebugRenderer debug = new Box2dDebugRenderer(this.mPhysicsWorld, getVertexBufferObjectManager());
+//		pScene.attachChild(debug);
+		DebugRenderer debug = new DebugRenderer(mPhysicsWorld, getVertexBufferObjectManager());
 		pScene.attachChild(debug);
 	}
 
