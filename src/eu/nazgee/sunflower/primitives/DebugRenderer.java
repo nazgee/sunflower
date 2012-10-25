@@ -13,6 +13,8 @@ import org.andengine.util.adt.color.Color;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -48,7 +50,6 @@ public class DebugRenderer extends Entity {
 				renderBody.setAlive();
 			}
 
-			body.getAngle();
 			renderBody.updateColor();
 			renderBody.setRotationCenter(body.getMassData().center.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getMassData().center.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
 			renderBody.setRotation((float) (360 - body.getAngle() * (180 / Math.PI)));
@@ -74,10 +75,18 @@ public class DebugRenderer extends Entity {
 			if (!body.isActive()) {
 				return Color.BLACK;
 			} else {
-				if (!body.isActive()) {
+				if (!body.isAwake()) {
 					return Color.RED;
 				} else {
-					return Color.GREEN;
+					switch (body.getType()) {
+					case StaticBody:
+						return Color.CYAN;
+					case KinematicBody:
+						return Color.WHITE;
+					case DynamicBody:
+					default:
+						return Color.GREEN;
+					}
 				}
 			}
 		}
@@ -112,7 +121,6 @@ public class DebugRenderer extends Entity {
 			Vector2 position = fixtureShape.getPosition();
 			float radius = fixtureShape.getRadius() * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT;
 
-//			entity = new Rectangle(position.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, position.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, radius, radius, pVBO);
 			entity = new Ellipse(position.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, position.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, radius, radius, pVBO);
 		}
 

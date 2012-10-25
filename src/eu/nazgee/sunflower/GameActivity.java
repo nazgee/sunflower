@@ -6,6 +6,7 @@ import org.andengine.engine.options.EngineOptions;
 import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -16,6 +17,7 @@ import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.input.sensor.acceleration.AccelerationData;
 import org.andengine.input.sensor.acceleration.IAccelerationListener;
+import org.andengine.input.touch.TouchEvent;
 import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
@@ -35,7 +37,7 @@ import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
 import eu.nazgee.sunflower.primitives.DebugRenderer;
 import eu.nazgee.sunflower.textures.Library;
 
-public class GameActivity extends SimpleAsyncGameActivity implements IAccelerationListener {
+public class GameActivity extends SimpleAsyncGameActivity implements IAccelerationListener, IOnSceneTouchListener {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -50,6 +52,7 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 	private ITextureRegion mFaceTextureRegion;
 	private Library mLibrary;
 	private PhysicsWorld mPhysicsWorld;
+	private DebugRenderer mDebugRenderrer;
 
 	// ===========================================================
 	// Constructors
@@ -184,10 +187,10 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 			i++;
 		} while (i < 4);
 
-//		Box2dDebugRenderer debug = new Box2dDebugRenderer(this.mPhysicsWorld, getVertexBufferObjectManager());
-//		pScene.attachChild(debug);
-		DebugRenderer debug = new DebugRenderer(mPhysicsWorld, getVertexBufferObjectManager());
-		pScene.attachChild(debug);
+		mDebugRenderrer = new DebugRenderer(mPhysicsWorld, getVertexBufferObjectManager());
+		pScene.attachChild(mDebugRenderrer);
+
+		pScene.setOnSceneTouchListener(this);
 	}
 
 	@Override
@@ -214,6 +217,17 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 		super.onPauseGame();
 
 		this.disableAccelerationSensor();
+	}
+
+	@Override
+	public boolean onSceneTouchEvent(final Scene pScene, final TouchEvent pSceneTouchEvent) {
+		if(this.mPhysicsWorld != null) {
+			if(pSceneTouchEvent.isActionDown()) {
+				this.mDebugRenderrer.setVisible(!mDebugRenderrer.isVisible());
+				return true;
+			}
+		}
+		return false;
 	}
 	// ===========================================================
 	// Methods
