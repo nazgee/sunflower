@@ -35,6 +35,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 
 import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
 import eu.nazgee.sunflower.primitives.DebugRenderer;
+import eu.nazgee.sunflower.primitives.TexturedPolygon;
 import eu.nazgee.sunflower.textures.Library;
 
 public class GameActivity extends SimpleAsyncGameActivity implements IAccelerationListener, IOnSceneTouchListener {
@@ -137,16 +138,8 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 
 		pScene.registerUpdateHandler(this.mPhysicsWorld);
 
-		final Sprite animatedSprite;
-//		Body body;
-
 		final float pX = centerX;
 		final float pY = centerY;
-		FixtureDef fixture = PhysicsFactory.createFixtureDef(1, 0.5f, 0.5f);
-//		animatedSprite = new Sprite(pX, pY, this.mLibrary.getProps().getSeed(1), this.getVertexBufferObjectManager());
-//		body = PhysicsFactory.createCircleBody(this.mPhysicsWorld, animatedSprite, BodyType.DynamicBody, fixture);
-//		pScene.attachChild(animatedSprite);
-//		this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(animatedSprite, body, true, true));
 
 		PhysicsEditorShapeLibrary phys = new PhysicsEditorShapeLibrary();
 		phys.open(this, "physics/physics.xml");
@@ -178,14 +171,17 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 			pScene.attachChild(face);
 			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
 
-//			Rectangle rect = new Rectangle(100, 100, 84, 84, getVertexBufferObjectManager());
-//			rect.setColor(0.09804f, 0.8274f, 0.9784f);
-//			body = PhysicsFactory.createCircleBody(mPhysicsWorld, rect, BodyType.DynamicBody, fixture);
-//			pScene.attachChild(rect);
-//			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(rect, body, true, true));
-			
 			i++;
 		} while (i < 4);
+
+		final float offsetX = 0f;
+		final float offsetY = 115f;
+		final float[] vertexX1 = { 200f - offsetX, 400f - offsetX,
+				300f - offsetX, 200f - offsetX };
+		final float[] vertexY1 = { 200f - offsetY, 200f - offsetY,
+				300f - offsetY, 300f - offsetY };
+		final TexturedPolygon myRepeatingSpriteShape = new TexturedPolygon(offsetX, offsetY, vertexX1, vertexY1, this.mLibrary.getTiles().getGrass(), this.getVertexBufferObjectManager());
+		pScene.attachChild(myRepeatingSpriteShape);
 
 		mDebugRenderrer = new DebugRenderer(mPhysicsWorld, getVertexBufferObjectManager());
 		pScene.attachChild(mDebugRenderrer);

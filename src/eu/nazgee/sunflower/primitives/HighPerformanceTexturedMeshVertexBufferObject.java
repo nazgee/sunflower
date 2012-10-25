@@ -1,6 +1,5 @@
 package eu.nazgee.sunflower.primitives;
 
-import org.andengine.entity.primitive.Mesh;
 import org.andengine.opengl.texture.region.ITextureRegion;
 import org.andengine.opengl.vbo.DrawType;
 import org.andengine.opengl.vbo.HighPerformanceVertexBufferObject;
@@ -50,7 +49,7 @@ public class HighPerformanceTexturedMeshVertexBufferObject extends HighPerforman
 		final float packedColor = pMesh.getColor().getABGRPackedFloat();
 
 		for(int i = 0; i < this.mVertexCount; i++) {
-			bufferData[(i * Mesh.VERTEX_SIZE) + Mesh.COLOR_INDEX] = packedColor;
+			bufferData[(i * TexturedMesh.VERTEX_SIZE) + TexturedMesh.COLOR_INDEX] = packedColor;
 		}
 
 		this.setDirtyOnHardware();

@@ -4,7 +4,7 @@ import org.andengine.engine.camera.Camera;
 import org.andengine.entity.IEntity;
 import org.andengine.entity.primitive.DrawMode;
 import org.andengine.entity.primitive.Line;
-import org.andengine.entity.primitive.Mesh;
+
 import org.andengine.entity.shape.Shape;
 import org.andengine.opengl.shader.PositionColorTextureCoordinatesShaderProgram;
 import org.andengine.opengl.shader.constants.ShaderProgramConstants;
@@ -97,15 +97,11 @@ public class TexturedMesh extends Shape {
 		this.mTextureRegion = pTextureRegion;
 		this.mMeshVertexBufferObject = pMeshVertexBufferObject;
 		this.mVertexCountToDraw = pVertexCount;
-		
-		if( pTextureRegion != null)
-		{
-			this.setBlendingEnabled(true);
-			this.initBlendFunction(pTextureRegion);
-			this.onUpdateTextureCoordinates();
-		
-		}
-		
+
+		this.setBlendingEnabled(true);
+		this.initBlendFunction(pTextureRegion);
+		this.onUpdateTextureCoordinates();
+
 		this.onUpdateVertices();
 		this.onUpdateColor();
 
@@ -138,17 +134,16 @@ public class TexturedMesh extends Shape {
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
 	// ===========================================================
+	@Override
+	public ITexturedMeshVertexBufferObject getVertexBufferObject() {
+		return this.mMeshVertexBufferObject;
+	}
 
 	@Override
 	public void reset() {
 		super.reset();
 
 		this.initBlendFunction(this.getTextureRegion().getTexture());
-	}
-
-	@Override
-	public ITexturedMeshVertexBufferObject getVertexBufferObject() {
-		return this.mMeshVertexBufferObject;
 	}
 
 	@Override
@@ -193,7 +188,7 @@ public class TexturedMesh extends Shape {
 
 	@Override
 	public boolean collidesWith(final IEntity pOtherEntity) {
-		if(pOtherEntity instanceof Mesh) {
+		if(pOtherEntity instanceof TexturedMesh) {
 			// TODO
 			return super.collidesWith(pOtherEntity);
 		} else if(pOtherEntity instanceof Line) {

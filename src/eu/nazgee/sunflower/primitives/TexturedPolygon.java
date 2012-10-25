@@ -10,7 +10,6 @@ import org.andengine.opengl.vbo.DrawType;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.opengl.vbo.attribute.VertexBufferObjectAttribute;
 
-import android.renderscript.Mesh;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
