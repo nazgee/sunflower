@@ -22,6 +22,7 @@ import org.andengine.opengl.texture.TextureOptions;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.ui.activity.SimpleAsyncGameActivity;
 import org.andengine.util.progress.IProgressListener;
@@ -54,6 +55,8 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 	private Library mLibrary;
 	private PhysicsWorld mPhysicsWorld;
 	private DebugRenderer mDebugRenderrer;
+	private TextureRegion mGrassTextureRegion;
+	private BitmapTextureAtlas mGrassBitmapTextureAtlas;
 
 	// ===========================================================
 	// Constructors
@@ -82,12 +85,15 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 		BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
 		Thread.sleep(100);
 		this.mBitmapTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 32, 32, TextureOptions.BILINEAR);
+		this.mGrassBitmapTextureAtlas = new BitmapTextureAtlas(this.getTextureManager(), 280, 280, TextureOptions.REPEATING_BILINEAR);
 		pProgressListener.onProgressChanged(40);
 		Thread.sleep(100);
 		this.mFaceTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(GameActivity.this.mBitmapTextureAtlas, GameActivity.this, "face_box.png", 0, 0);
+		this.mGrassTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(GameActivity.this.mGrassBitmapTextureAtlas, GameActivity.this, "grass.jpg", 0, 0);
 		pProgressListener.onProgressChanged(60);
 		Thread.sleep(100);
 		this.mBitmapTextureAtlas.load();
+		this.mGrassBitmapTextureAtlas.load();
 		this.mLibrary = new Library(getEngine(), GameActivity.this);
 		this.mLibrary.load(getEngine(), GameActivity.this);
 		pProgressListener.onProgressChanged(80);
@@ -112,8 +118,8 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 		final float centerY = (Consts.CAMERA_HEIGHT - this.mFaceTextureRegion.getHeight()) / 2;
 
 		/* Create the face and add it to the scene. */
-		final Sprite grass = new Sprite(centerX, centerY, this.mLibrary.getTiles().getGrass(), this.getVertexBufferObjectManager());
-		pScene.attachChild(grass);
+//		final Sprite grass = new Sprite(centerX, centerY, this.mLibrary.getTiles().getGrass(), this.getVertexBufferObjectManager());
+//		pScene.attachChild(grass);
 		final Sprite box = new Sprite(centerX, centerY, this.mFaceTextureRegion, this.getVertexBufferObjectManager());
 		pScene.attachChild(box);
 
@@ -176,11 +182,9 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 
 		final float offsetX = 0f;
 		final float offsetY = 115f;
-		final float[] vertexX1 = { 200f - offsetX, 400f - offsetX,
-				300f - offsetX, 200f - offsetX };
-		final float[] vertexY1 = { 200f - offsetY, 200f - offsetY,
-				300f - offsetY, 300f - offsetY };
-		final TexturedPolygon myRepeatingSpriteShape = new TexturedPolygon(offsetX, offsetY, vertexX1, vertexY1, this.mLibrary.getTiles().getGrass(), this.getVertexBufferObjectManager());
+		final float[] vertexX1 = { 200f - offsetX, 1000f - offsetX, 300f - offsetX, 200f - offsetX };
+		final float[] vertexY1 = { 200f - offsetY, 200f - offsetY, 300f - offsetY, 300f - offsetY };
+		final TexturedPolygon myRepeatingSpriteShape = new TexturedPolygon(offsetX, offsetY, vertexX1, vertexY1, mGrassTextureRegion, this.getVertexBufferObjectManager());
 		pScene.attachChild(myRepeatingSpriteShape);
 
 		mDebugRenderrer = new DebugRenderer(mPhysicsWorld, getVertexBufferObjectManager());
