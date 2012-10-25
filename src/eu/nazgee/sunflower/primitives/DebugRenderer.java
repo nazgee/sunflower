@@ -49,6 +49,7 @@ public class DebugRenderer extends Entity {
 			}
 
 			body.getAngle();
+			renderBody.updateColor();
 			renderBody.setRotationCenter(body.getMassData().center.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getMassData().center.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
 			renderBody.setRotation((float) (360 - body.getAngle() * (180 / Math.PI)));
 			renderBody.setPosition(body.getPosition().x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getPosition().y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
@@ -164,9 +165,15 @@ public class DebugRenderer extends Entity {
 					renderfix = new RenderFixturePoly(fixture, pVBO);
 				}
 
+				updateColor();
 				mRenderFixtures.add(renderfix);
-				renderfix.getEntity().setColor(fixtureToColor(fixture));
 				this.attachChild(renderfix.getEntity());
+			}
+		}
+
+		public void updateColor() {
+			for (IRenderFixture renderfix : mRenderFixtures) {
+				renderfix.getEntity().setColor(fixtureToColor(renderfix.getFixture()));
 			}
 		}
 

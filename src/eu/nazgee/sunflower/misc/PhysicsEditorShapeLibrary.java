@@ -20,7 +20,7 @@ import java.util.HashMap;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.andengine.entity.shape.IShape;
+import org.andengine.entity.sprite.Sprite;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
@@ -77,13 +77,14 @@ public class PhysicsEditorShapeLibrary {
 * @param pPhysicsWorld the AndEngine Box2D physics world object.
 * @return
 */
-    public Body createBody(String name, IShape pShape, PhysicsWorld pPhysicsWorld) {
+    public Body createBody(String name, Sprite pSprite, PhysicsWorld pPhysicsWorld) {
         BodyTemplate bodyTemplate = this.shapes.get(name);
 
         final BodyDef boxBodyDef = new BodyDef();
         boxBodyDef.type = bodyTemplate.isDynamic ? BodyDef.BodyType.DynamicBody : BodyDef.BodyType.StaticBody;
 
-        final float[] sceneCenterCoordinates = pShape.getSceneCenterCoordinates();
+        pSprite.setFlippedVertical(true);
+        final float[] sceneCenterCoordinates = pSprite.getSceneCenterCoordinates();
         boxBodyDef.position.x = sceneCenterCoordinates[Constants.VERTEX_INDEX_X] / this.pixelToMeterRatio;
         boxBodyDef.position.y = sceneCenterCoordinates[Constants.VERTEX_INDEX_Y] / this.pixelToMeterRatio;
 
@@ -221,15 +222,11 @@ public class PhysicsEditorShapeLibrary {
             } else if (localName.equalsIgnoreCase(TAG_POLYGON)) {
                 currentPolygonVertices.clear();
             } else if (localName.equalsIgnoreCase(TAG_VERTEX)) {
-                currentPolygonVertices.add(new Vector2(-Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, -Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
+                currentPolygonVertices.add(new Vector2(Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio, Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio));
             } else if (localName.equalsIgnoreCase(TAG_CIRCLE)) {
             	currentCircle.r = Float.parseFloat(attributes.getValue(TAG_R)) / this.pixelToMeterRatio;
                 currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X)) / this.pixelToMeterRatio;
                 currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y)) / this.pixelToMeterRatio;
-//                currentCircle.x = Float.parseFloat(attributes.getValue(TAG_X));
-//                currentCircle.y = Float.parseFloat(attributes.getValue(TAG_Y));
-//                currentCircle.x += 0.5f;
-//                currentCircle.y += 0.5f;
             } 
         }
     }
