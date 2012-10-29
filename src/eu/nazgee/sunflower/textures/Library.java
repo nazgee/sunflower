@@ -28,6 +28,7 @@ public class Library implements ITexturesLibrary {
 	private LinkedList<ITexturesLibrary> mLibs = new LinkedList<ITexturesLibrary>();
 	private final TexturesLibraryProps mProps;
 	private final TexturesLibraryTiles mTiles;
+	private final TexturesLibrarySpiders mSpiders;
 
 	// ===========================================================
 	// Constructors
@@ -35,8 +36,10 @@ public class Library implements ITexturesLibrary {
 	public Library(final Engine e, final Context c) {
 		mProps = new TexturesLibraryProps(e, c);
 		mTiles = new TexturesLibraryTiles(e, c);
+		mSpiders = new TexturesLibrarySpiders(e, c);
 		mLibs.add(getProps());
 		mLibs.add(getTiles());
+		mLibs.add(getSpiders());
 	}
 
 	// ===========================================================
@@ -48,6 +51,10 @@ public class Library implements ITexturesLibrary {
 
 	public TexturesLibraryTiles getTiles() {
 		return mTiles;
+	}
+
+	public TexturesLibrarySpiders getSpiders() {
+		return mSpiders;
 	}
 
 	public Font getFont() {

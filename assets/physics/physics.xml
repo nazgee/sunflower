@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- created with http://www.physicseditor.de -->
 <bodydef version="1.0">
-    <bodies numBodies="5">
+    <bodies numBodies="19">
 
         <body name="sun_01" dynamic="true" numFixtures="1">
 
@@ -189,6 +189,522 @@
                     <vertex x="1.0000" y="-38.0000" />
 
                     <vertex x="37.0000" y="-47.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-body" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="CIRCLE"
+                numPolygons=""
+                >
+
+                <circle r="35.000" x="-1.250" y="-11.750"/>
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R11" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="2"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="24.0000" y="3.0000" />
+
+                    <vertex x="22.0000" y="-1.0000" />
+
+                    <vertex x="33.0000" y="-7.0000" />
+
+                    <vertex x="36.0000" y="-3.0000" />
+
+                </polygon>
+
+                <polygon numVertexes="4">
+
+                    <vertex x="22.0000" y="-1.0000" />
+
+                    <vertex x="24.0000" y="3.0000" />
+
+                    <vertex x="-36.0000" y="7.0000" />
+
+                    <vertex x="-36.0000" y="-1.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R12" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="2"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-24.0000" y="-5.5000" />
+
+                    <vertex x="-23.0000" y="4.5000" />
+
+                    <vertex x="-29.0000" y="7.5000" />
+
+                    <vertex x="-37.0000" y="0.5000" />
+
+                </polygon>
+
+                <polygon numVertexes="4">
+
+                    <vertex x="36.0000" y="-4.5000" />
+
+                    <vertex x="36.0000" y="3.5000" />
+
+                    <vertex x="-23.0000" y="4.5000" />
+
+                    <vertex x="-24.0000" y="-5.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R13" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="28.5000" y="-8.0000" />
+
+                    <vertex x="26.5000" y="4.0000" />
+
+                    <vertex x="-22.5000" y="8.0000" />
+
+                    <vertex x="-30.5000" y="-6.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R21" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="2"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="44.0000" y="-3.5000" />
+
+                    <vertex x="25.0000" y="4.5000" />
+
+                    <vertex x="25.0000" y="0.5000" />
+
+                    <vertex x="43.0000" y="-6.5000" />
+
+                </polygon>
+
+                <polygon numVertexes="4">
+
+                    <vertex x="25.0000" y="0.5000" />
+
+                    <vertex x="25.0000" y="4.5000" />
+
+                    <vertex x="-36.0000" y="3.5000" />
+
+                    <vertex x="-44.0000" y="-4.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R22" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="47.0000" y="-5.0000" />
+
+                    <vertex x="48.0000" y="4.0000" />
+
+                    <vertex x="-43.0000" y="7.0000" />
+
+                    <vertex x="-47.0000" y="-4.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R23" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-36.5000" y="-5.0000" />
+
+                    <vertex x="35.5000" y="-3.0000" />
+
+                    <vertex x="32.5000" y="6.0000" />
+
+                    <vertex x="-37.5000" y="7.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R31" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="2"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="11.5000" y="4.5000" />
+
+                    <vertex x="8.5000" y="-0.5000" />
+
+                    <vertex x="18.5000" y="-5.5000" />
+
+                    <vertex x="21.5000" y="-2.5000" />
+
+                </polygon>
+
+                <polygon numVertexes="4">
+
+                    <vertex x="8.5000" y="-0.5000" />
+
+                    <vertex x="11.5000" y="4.5000" />
+
+                    <vertex x="-23.5000" y="4.5000" />
+
+                    <vertex x="-23.5000" y="-2.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R32" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="27.5000" y="-4.5000" />
+
+                    <vertex x="27.5000" y="2.5000" />
+
+                    <vertex x="-24.5000" y="5.5000" />
+
+                    <vertex x="-28.5000" y="-4.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R33" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-19.5000" y="-6.0000" />
+
+                    <vertex x="23.5000" y="-6.0000" />
+
+                    <vertex x="22.5000" y="3.0000" />
+
+                    <vertex x="-23.5000" y="7.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R41" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="2"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="24.5000" y="-2.5000" />
+
+                    <vertex x="8.5000" y="6.5000" />
+
+                    <vertex x="10.5000" y="-0.5000" />
+
+                    <vertex x="24.5000" y="-8.5000" />
+
+                </polygon>
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-24.5000" y="-0.5000" />
+
+                    <vertex x="10.5000" y="-0.5000" />
+
+                    <vertex x="8.5000" y="6.5000" />
+
+                    <vertex x="-24.5000" y="6.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R42" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-28.5000" y="-5.5000" />
+
+                    <vertex x="30.5000" y="-4.5000" />
+
+                    <vertex x="26.5000" y="4.5000" />
+
+                    <vertex x="-24.5000" y="5.5000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-R43" dynamic="true" numFixtures="1">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="4">
+
+                    <vertex x="-21.0000" y="-5.0000" />
+
+                    <vertex x="26.0000" y="-5.0000" />
+
+                    <vertex x="23.0000" y="4.0000" />
+
+                    <vertex x="-28.0000" y="5.0000" />
+
+                </polygon>
+
+
+            </fixture>
+
+        </body>
+
+        <body name="spider01-tail" dynamic="true" numFixtures="2">
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="CIRCLE"
+                numPolygons=""
+                >
+
+                <circle r="22.000" x="-0.250" y="-4.250"/>
+
+            </fixture>
+
+            <fixture
+                density="2"
+                friction="0"
+                restitution="0"
+                filter_categoryBits="1"
+                filter_groupIndex="0"
+                filter_maskBits="65535"
+                isSensor="false"
+                type="POLYGON"
+                numPolygons="1"
+                >
+
+
+                <polygon numVertexes="6">
+
+                    <vertex x="22.0000" y="-5.5000" />
+
+                    <vertex x="22.0000" y="19.5000" />
+
+                    <vertex x="16.0000" y="28.5000" />
+
+                    <vertex x="-15.0000" y="28.5000" />
+
+                    <vertex x="-22.0000" y="19.5000" />
+
+                    <vertex x="-22.0000" y="-5.5000" />
 
                 </polygon>
 

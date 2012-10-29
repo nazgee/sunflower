@@ -34,6 +34,8 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 
+import eu.nazgee.spider.Spider;
+import eu.nazgee.spider.Spider.SpiderDesc;
 import eu.nazgee.sunflower.misc.PhysicsEditorShapeLibrary;
 import eu.nazgee.sunflower.primitives.DebugRenderer;
 import eu.nazgee.sunflower.primitives.TexturedPolygon;
@@ -178,7 +180,15 @@ public class GameActivity extends SimpleAsyncGameActivity implements IAccelerati
 			this.mPhysicsWorld.registerPhysicsConnector(new PhysicsConnector(face, body, true, true));
 
 			i++;
-		} while (i < 4);
+		} while (i < 1);
+
+		Spider spidy = new Spider(SpiderDesc.SPIDER_01, pX, pY, mPhysicsWorld, phys, mLibrary.getSpiders(), getVertexBufferObjectManager());
+
+		for (int leg = 0; leg < SpiderDesc.SPIDER_01.LEGS_NUMBER; leg++) {
+			for (int segment = 0; segment < SpiderDesc.SPIDER_01.JOINTS_NUMBER; segment++) {
+				pScene.attachChild(spidy.mLegs[leg].mFaces[segment]);
+			}
+		}
 
 		final float offsetX = 0f;
 		final float offsetY = 115f;

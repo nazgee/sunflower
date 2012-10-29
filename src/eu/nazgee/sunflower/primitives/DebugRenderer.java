@@ -8,13 +8,12 @@ import java.util.LinkedList;
 import org.andengine.entity.Entity;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.Vector2Pool;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 import org.andengine.util.adt.color.Color;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
@@ -22,17 +21,27 @@ import com.badlogic.gdx.physics.box2d.Shape.Type;
 
 
 public class DebugRenderer extends Entity {
-
 	private PhysicsWorld mWorld;
 	private final VertexBufferObjectManager mVBO;
-	private HashMap<Body, RenderBody> mToBeRenderred = new HashMap<Body, DebugRenderer.RenderBody>();
+	private HashMap<Body, RenderOfBody> mToBeRenderred = new HashMap<Body, RenderOfBody>();
 
+	/**
+	 * To construct the renderer physical world is needed (to access physics)
+	 * and VBO (to construct visible representations)
+	 * @param world
+	 * @param pVBO
+	 */
 	public DebugRenderer(PhysicsWorld world, VertexBufferObjectManager pVBO) {
 		super();
 		this.mWorld = world;
 		this.mVBO = pVBO;
 	}
 
+	/**
+	 * This is where all the magic happens. Bodies representations are rendered.
+	 * Dead bodies (not being part of physical world anymore) are removed from
+	 * the rendering.
+	 */
 	@Override
 	protected void onManagedUpdate(float pSecondsElapsed) {
 		super.onManagedUpdate(pSecondsElapsed);
@@ -40,33 +49,49 @@ public class DebugRenderer extends Entity {
 		Iterator<Body> iterator = mWorld.getBodies();
 		while (iterator.hasNext()) {
 			Body body = iterator.next();
-			RenderBody renderBody;
+			RenderOfBody renderOfBody;
 			if (!mToBeRenderred.containsKey(body)) {
-				renderBody = new RenderBody(body, mVBO);
-				mToBeRenderred.put(body, renderBody);
-				this.attachChild(renderBody);
+				renderOfBody = new RenderOfBody(body, mVBO);
+				mToBeRenderred.put(body, renderOfBody);
+				this.attachChild(renderOfBody);
 			} else {
-				renderBody = mToBeRenderred.get(body);
-				renderBody.setAlive();
+				renderOfBody = mToBeRenderred.get(body);
+				renderOfBody.keepRendering(true);
 			}
 
-			renderBody.updateColor();
-			renderBody.setRotationCenter(body.getMassData().center.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getMassData().center.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
-			renderBody.setRotation((float) (360 - body.getAngle() * (180 / Math.PI)));
-			renderBody.setPosition(body.getPosition().x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getPosition().y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
+			/**
+			 * This is where debug renders are moved to match body position.
+			 * These 4 lines probably have to be modified if you are using
+			 * non-AnchorCenter branch of AE
+			 */
+			renderOfBody.updateColor();
+			renderOfBody.setRotationCenter(body.getMassData().center.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getMassData().center.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
+			renderOfBody.setRotation((float) (360 - body.getAngle() * (180 / Math.PI)));
+			renderOfBody.setPosition(body.getPosition().x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, body.getPosition().y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT);
 		}
 
-		for (Iterator<RenderBody> renderBodyIter = mToBeRenderred.values().iterator(); renderBodyIter.hasNext();) {
-			RenderBody renderBody = renderBodyIter.next();
-			if (renderBody.isAlive()) {
-				renderBody.setDead();
+		/**
+		 * Get rid of all bodies that where not rendered in this iteration
+		 * (where removed from physical world). Also assume that all other bodies
+		 * will not be rendered anymore (it will be verified on next iteration).
+		 */
+		for (Iterator<RenderOfBody> renderBodyIter = mToBeRenderred.values().iterator(); renderBodyIter.hasNext();) {
+			RenderOfBody renderOfBody = renderBodyIter.next();
+			if (renderOfBody.hasToBeRendered()) {
+				renderOfBody.keepRendering(false);
 			} else {
-				mToBeRenderred.remove(renderBody.body);
-				this.detachChild(renderBody);
+				mToBeRenderred.remove(renderOfBody.body);
+				this.detachChild(renderOfBody);
 			}
 		}
 	}
 
+	/**
+	 * Translates b2d Fixture to appropriate color, depending on body state/type
+	 * Modify to suit your needs
+	 * @param fixture
+	 * @return
+	 */
 	private static Color fixtureToColor(Fixture fixture) {
 		if (fixture.isSensor()) {
 			return Color.PINK;
@@ -92,15 +117,24 @@ public class DebugRenderer extends Entity {
 		}
 	}
 
-	private interface IRenderFixture {
+	/**
+	 * Binds fixture and it's graphical representation together
+	 * @author nazgee
+	 */
+	private interface IRenderOfFixture {
 		public Fixture getFixture();
 		public Entity getEntity();
 	}
 
-	private abstract class RenderFixture implements IRenderFixture {
+	/**
+	 * Base implementation of fixture and it's graphical representation bound together
+	 * @author nazgee
+	 */
+	private abstract class RenderOfFixture implements IRenderOfFixture {
 		protected final Fixture fixture;
+		protected Entity entity;
 
-		public RenderFixture(Fixture fixture) {
+		public RenderOfFixture(Fixture fixture) {
 			super();
 			this.fixture = fixture;
 		}
@@ -109,92 +143,100 @@ public class DebugRenderer extends Entity {
 		public Fixture getFixture() {
 			return fixture;
 		}
+
+		@Override
+		public Entity getEntity() {
+			return entity;
+		}
 	}
 
-	private class RenderFixtureCircle extends RenderFixture {
-		private Entity entity;
-
-		public RenderFixtureCircle(Fixture fixture, VertexBufferObjectManager pVBO) {
+	/**
+	 * Circular fixture representation
+	 * @author nazgee
+	 */
+	private class RenderOfCircleFixture extends RenderOfFixture {
+		public RenderOfCircleFixture(Fixture fixture, VertexBufferObjectManager pVBO) {
 			super(fixture);
 
 			CircleShape fixtureShape = (CircleShape) fixture.getShape();
 			Vector2 position = fixtureShape.getPosition();
 			float radius = fixtureShape.getRadius() * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT;
 
-			entity = new Ellipse(position.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, position.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT, radius, radius, pVBO);
-		}
-
-		@Override
-		public Entity getEntity() {
-			return entity;
+			entity = new Ellipse(position.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT,
+					position.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT,
+					radius, radius, pVBO);
 		}
 	}
 
-	private class RenderFixturePoly extends RenderFixture {
-		private Entity entity;
-
-		public RenderFixturePoly(Fixture fixture, VertexBufferObjectManager pVBO) {
+	/**
+	 * Polygonal fixture representation
+	 * @author nazgee
+	 */
+	private class RenderOfPolyFixture extends RenderOfFixture {
+		public RenderOfPolyFixture(Fixture fixture, VertexBufferObjectManager pVBO) {
 			super(fixture);
 
 			PolygonShape fixtureShape = (PolygonShape) fixture.getShape();
 			int vSize = fixtureShape.getVertexCount();
 			float[] xPoints = new float[vSize];
 			float[] yPoints = new float[vSize];
-			Vector2 vertex = new Vector2();
 
+			Vector2 vertex = Vector2Pool.obtain();
 			for (int i = 0; i < fixtureShape.getVertexCount(); i++) {
 				fixtureShape.getVertex(i, vertex);
 				xPoints[i] = vertex.x * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT;
 				yPoints[i] = vertex.y * PhysicsConnector.PIXEL_TO_METER_RATIO_DEFAULT;
 			}
+			Vector2Pool.recycle(vertex);
 
 			entity = new PolyLine(0, 0, xPoints, yPoints, pVBO);
 		}
-
-		@Override
-		public Entity getEntity() {
-			return entity;
-		}
 	}
 
-	private class RenderBody extends Entity {
+	/**
+	 * Physical body representation- it contains of multiple RenderFixture
+	 * @author nazgee
+	 *
+	 */
+	private class RenderOfBody extends Entity {
 		public Body body;
-		public LinkedList<IRenderFixture> mRenderFixtures = new LinkedList<DebugRenderer.IRenderFixture>();
-		private boolean mIsLive = true;
+		public LinkedList<IRenderOfFixture> mRenderFixtures = new LinkedList<DebugRenderer.IRenderOfFixture>();
+		private boolean mKeepRendering = true;
 
-		public RenderBody(Body pBody, VertexBufferObjectManager pVBO) {
+		public RenderOfBody(Body pBody, VertexBufferObjectManager pVBO) {
 			this.body = pBody;
 			ArrayList<Fixture> fixtures = pBody.getFixtureList();
+
+			/**
+			 * Spawn all IRenderOfFixture for this body that are out there,
+			 * and bind them to this RenderOfBody
+			 */
 			for (Fixture fixture : fixtures) {
-				IRenderFixture renderfix;
+				IRenderOfFixture renderOfFixture;
 				if (fixture.getShape().getType() == Type.Circle) {
-					renderfix = new RenderFixtureCircle(fixture, pVBO);
+					renderOfFixture = new RenderOfCircleFixture(fixture, pVBO);
 				} else {
-					renderfix = new RenderFixturePoly(fixture, pVBO);
+					renderOfFixture = new RenderOfPolyFixture(fixture, pVBO);
 				}
 
 				updateColor();
-				mRenderFixtures.add(renderfix);
-				this.attachChild(renderfix.getEntity());
+				mRenderFixtures.add(renderOfFixture);
+				this.attachChild(renderOfFixture.getEntity());
 			}
 		}
 
 		public void updateColor() {
-			for (IRenderFixture renderfix : mRenderFixtures) {
-				renderfix.getEntity().setColor(fixtureToColor(renderfix.getFixture()));
+			for (IRenderOfFixture renderOfFix : mRenderFixtures) {
+				renderOfFix.getEntity().setColor(fixtureToColor(renderOfFix.getFixture()));
 			}
 		}
 
-		public boolean isAlive() {
-			return mIsLive;
+		public boolean hasToBeRendered() {
+			return mKeepRendering;
 		}
 
-		public void setAlive() {
-			this.mIsLive = true;
-		}
-
-		public void setDead() {
-			this.mIsLive = false;
+		public void keepRendering(boolean pRender) {
+			this.mKeepRendering = pRender;
 		}
 	}
 }

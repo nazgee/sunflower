@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<texture version="1" file="spiders.png" type="bitmap" width="256" height="256" pixelformat="RGBA_8888" minfilter="linear" magfilter="linear" wrapt="clamp" wraps="clamp" premultiplyalpha="false">
+    <!-- Created with TexturePacker http://texturepacker.com -->
+    <!-- $TexturePacker:SmartUpdate:b39968dd351e5209ddf84dca32e02aea$ -->
+    <textureregion id="0" src="s01/spider01-R11.png" x="85" y="27" width="76" height="18" rotated="true" trimmed="false" srcx="0" srcy="0" srcwidth="76" srcheight="18"/>
+    <textureregion id="1" src="s01/spider01-R12.png" x="3" y="27" width="78" height="19" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="78" srcheight="19"/>
+    <textureregion id="2" src="s01/spider01-R13.png" x="3" y="78" width="65" height="22" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="65" srcheight="22"/>
+    <textureregion id="3" src="s01/spider01-R21.png" x="107" y="3" width="92" height="17" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="92" srcheight="17"/>
+    <textureregion id="4" src="s01/spider01-R22.png" x="3" y="3" width="100" height="20" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="100" srcheight="20"/>
+    <textureregion id="5" src="s01/spider01-R23.png" x="3" y="50" width="77" height="24" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="77" srcheight="24"/>
+    <textureregion id="6" src="s01/spider01-R31.png" x="198" y="109" width="47" height="15" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="47" srcheight="15"/>
+    <textureregion id="7" src="s01/spider01-R32.png" x="70" y="107" width="59" height="15" rotated="true" trimmed="false" srcx="0" srcy="0" srcwidth="59" srcheight="15"/>
+    <textureregion id="8" src="s01/spider01-R33.png" x="198" y="89" width="51" height="16" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="51" srcheight="16"/>
+    <textureregion id="9" src="s01/spider01-R41.png" x="198" y="66" width="53" height="19" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="53" srcheight="19"/>
+    <textureregion id="10" src="s01/spider01-R42.png" x="3" y="104" width="63" height="17" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="63" srcheight="17"/>
+    <textureregion id="11" src="s01/spider01-R43.png" x="89" y="107" width="58" height="14" rotated="true" trimmed="false" srcx="0" srcy="0" srcwidth="58" srcheight="14"/>
+    <textureregion id="12" src="s01/spider01-body.png" x="107" y="24" width="87" height="82" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="87" srcheight="82"/>
+    <textureregion id="13" src="s01/spider01-tail.png" x="203" y="3" width="50" height="59" rotated="false" trimmed="false" srcx="0" srcy="0" srcwidth="50" srcheight="59"/>
+</texture>
